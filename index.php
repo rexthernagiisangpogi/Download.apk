@@ -11,6 +11,8 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name= "keywords" content="TODA GO, TODA, Tricycle App, Ride Booking, Transportation App, Naval, Mobile App, APK Download, TODA GO, todago">
+    <meta name="google-site-verification" content="6ZLHakP2RaQlgZxIm_CASjBX_iEEswtxXZdraUJD9bo">
     <title><?php echo htmlspecialchars($appName); ?> - Download</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
