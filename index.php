@@ -12,8 +12,9 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name= "keywords" content="TODA GO, TODA, Tricycle App, Ride Booking, Transportation App, Naval, Mobile App, APK Download, TODA GO, todago">
+    <meta name="description" content="TODA GO (TODAGO) is a tricycle ride booking app for drivers and passengers. Book rides, track drivers, and download the APK. Fast, easy, and free to use in Naval Biliran.">
     <meta name="google-site-verification" content="6ZLHakP2RaQlgZxIm_CASjBX_iEEswtxXZdraUJD9bo">
-    <title><?php echo htmlspecialchars($appName); ?> - Download</title>
+    <title><?php echo htmlspecialchars($appName); ?> - Download | TODA GO | Tricycle Ride App</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
