@@ -2,9 +2,11 @@
 // App information
 $appName = "TODA GO";
 $version = "1.0.0";
-$apkFile = 'app-release.apk';
-$fileSize = file_exists($apkFile) ? round(filesize($apkFile) / (1024 * 1024), 1) . ' MB' : '89.5 MB';
-$lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/A';
+$fileSize = '89.7 MB';
+
+// Load feedbacks
+$feedbackFile = 'feedbacks.json';
+$feedbacks = file_exists($feedbackFile) ? json_decode(file_get_contents($feedbackFile), true) : [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,12 +45,6 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
     <main class="container">
         <!-- Download Section -->
         <section class="download-section">
-            <?php if (isset($_GET['error']) && $_GET['error'] === 'file_not_found'): ?>
-                <div style="background: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; padding: 1rem; margin-bottom: 2rem; border-radius: 8px;">
-                    <p><i class="fas fa-exclamation-triangle"></i> Error: The APK file was not found. Please contact support.</p>
-                </div>
-            <?php endif; ?>
-            
             <div class="download-card">
                 <div class="app-icon">
                     <img src="static/img/WWWW.png" alt="TODA Go Logo" style="width: 120px; height: 120px; border-radius: 50%; background: #2d3748; padding: 15px;">
@@ -59,10 +55,10 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
                     <div class="app-details">
                         <div class="detail">
                             <i class="fas fa-database"></i>
-                            <span>Size:<?php echo $fileSize; ?></span>
+                            <span>Size: <?php echo $fileSize; ?></span>
                         </div>
                     </div>
-                    <a href="https://github.com/rexthernagiisangpogi/TODA-GO/releases/download/TODA_GO/TODA.GO.apk" class="download-btn">
+                    <a href="https://github.com/rexthernagiisangpogi/TODA-GO/releases/download/TODA_GO/TODAGO.apk" class="download-btn">
                         <i class="fas fa-download"></i>
                         Download APK
                     </a>
@@ -106,6 +102,71 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
             </div>
         </section>
 
+        <!-- Feedback Section -->
+        <section id="feedback" class="feedback-section">
+            <h2 class="section-title">User Feedback</h2>
+            <p class="section-subtitle">See what our users are saying about TODA GO</p>
+            
+            <!-- Feedback Form -->
+            <div class="feedback-form-container">
+                <h3>Share Your Experience</h3>
+                <form id="feedbackForm" class="feedback-form">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <div class="rating-input">
+                        <label>Rating:</label>
+                        <div class="stars">
+                            <input type="radio" name="rating" value="5" id="star5" required>
+                            <label for="star5"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="4" id="star4">
+                            <label for="star4"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="3" id="star3">
+                            <label for="star3"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="2" id="star2">
+                            <label for="star2"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" value="1" id="star1">
+                            <label for="star1"><i class="fas fa-star"></i></label>
+                        </div>
+                    </div>
+                    <textarea name="comment" placeholder="Share your experience with TODA GO..." rows="4" required></textarea>
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+                </form>
+            </div>
+
+            <div class="feedback-grid">
+                <?php if (empty($feedbacks)): ?>
+                    <p style="text-align: center; color: #6b7280; grid-column: 1/-1;">No feedback yet. Be the first to share your experience!</p>
+                <?php else: ?>
+                    <?php foreach ($feedbacks as $index => $fb): 
+                        $initials = implode('', array_map(fn($n) => strtoupper($n[0]), explode(' ', $fb['name'])));
+                        $initials = substr($initials, 0, 2);
+                        $hiddenClass = $index >= 2 ? ' hidden-feedback' : '';
+                    ?>
+                        <div class="feedback-card<?php echo $hiddenClass; ?>">
+                            <div class="feedback-header">
+                                <div class="user-avatar"><?php echo $initials; ?></div>
+                                <div class="user-info">
+                                    <h4><?php echo htmlspecialchars($fb['name']); ?></h4>
+                                    <div class="rating">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="fa<?php echo $i <= $fb['rating'] ? 's' : 'r'; ?> fa-star"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="feedback-text">"<?php echo htmlspecialchars($fb['comment']); ?>"</p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <?php if (count($feedbacks) > 2): ?>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button id="seeMoreBtn" class="see-more-btn">
+                        <i class="fas fa-chevron-down"></i> See More Comments
+                    </button>
+                </div>
+            <?php endif; ?>
+        </section>
+
        
     <!-- Footer -->
     <footer id="contact" class="footer">
@@ -132,6 +193,7 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
                 <ul class="footer-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#features">Features</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -149,7 +211,7 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
             <div class="footer-section">
                 <h3>Download</h3>
                 <div class="download-links">
-                    <a href="https://github.com/rexthernagiisangpogi/TODA-GO/releases/download/TODA_GO/TODA.GO.apk" class="download-btn" class="footer-download-btn">
+                    <a href="https://github.com/rexthernagiisangpogi/TODA-GO/releases/download/TODA_GO/TODAGO.apk" class="footer-download-btn">
                         <i class="fab fa-android"></i>
                         <div>
                             <small>Download for</small>
@@ -163,21 +225,12 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
         <div class="footer-bottom">
             <div class="footer-bottom-content">
                 <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($appName); ?>. All rights reserved.</p>
-                <p class="footer-version">Version <?php echo htmlspecialchars($version); ?> | Last updated: <?php echo $lastUpdated; ?></p>
+                <p class="footer-version">Version <?php echo htmlspecialchars($version); ?></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const mobileMenu = document.getElementById('mobile-menu');
-        const navMenu = document.querySelector('.nav-menu');
-        
-        mobileMenu.addEventListener('click', () => {
-            mobileMenu.classList.toggle('is-active');
-            navMenu.classList.toggle('active');
-        });
-        
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -191,28 +244,48 @@ $lastUpdated = file_exists($apkFile) ? date('F d, Y', filemtime($apkFile)) : 'N/
                 }
             });
         });
-        
-        // Active navigation link highlighting
-        window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.nav-link');
+
+        // Feedback form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
+            const formData = new FormData(this);
             
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
+            fetch('save_feedback.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you for your feedback!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
                 }
+            })
+            .catch(error => {
+                alert('Error submitting feedback. Please try again.');
             });
         });
+
+        // See More Comments button
+        const seeMoreBtn = document.getElementById('seeMoreBtn');
+        if (seeMoreBtn) {
+            seeMoreBtn.addEventListener('click', function() {
+                const hiddenFeedbacks = document.querySelectorAll('.hidden-feedback');
+                const isShowing = this.classList.contains('active');
+                
+                hiddenFeedbacks.forEach(feedback => {
+                    feedback.style.display = isShowing ? 'none' : 'block';
+                });
+                
+                this.classList.toggle('active');
+                this.innerHTML = isShowing 
+                    ? '<i class="fas fa-chevron-down"></i> See More Comments'
+                    : '<i class="fas fa-chevron-up"></i> Show Less';
+            });
+        }
     </script>
 </body>
 </html>
